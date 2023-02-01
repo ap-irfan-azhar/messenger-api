@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   post 'login', to: 'users#login'
   post 'sign_up', to: 'users#sign_up'
   resources 'conversations', only: [:index, :show]
+  post 'messages', to: 'chats#create'
 end
