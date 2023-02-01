@@ -14,7 +14,6 @@ class Chat < ApplicationRecord
 
   def self.new_message(sender, receiver, message)
     @conversation = (sender.conversations & receiver.conversations).first
-    binding.pry
     if @conversation.nil?
       @conversation = Conversation.new
       @conversation.users << sender
