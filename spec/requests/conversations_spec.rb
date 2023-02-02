@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe 'Conversations API', type: :request do
   let(:dimas) { create(:user) }
-  let(:dimas_headers) { valid_headers(dimas) }
+  let(:dimas_headers) { valid_headers(dimas.id) }
 
   let(:samid) { create(:user) }
-  let(:samid_headers) { valid_headers(samid) }
+  let(:samid_headers) { valid_headers(samid.id) }
 
   describe 'GET /conversations' do
     context 'when user have no conversation' do
@@ -22,7 +22,21 @@ RSpec.describe 'Conversations API', type: :request do
 
     context 'when user have conversations' do
       # TODOS: Populate database with conversation of current user
-
+      let!(:conv1) { create(:conversation)}
+      let!(:conv2) { create(:conversation)}
+      let!(:conv3) { create(:conversation)}
+      let!(:conv4) { create(:conversation)}
+      let!(:conv5) { create(:conversation)}
+      let!(:cu1) { create(:conversation_user, :with_ids, user_id: dimas.id, conversation_id: conv1.id)}
+      let!(:cu2) { create(:conversation_user, :with_ids, user_id: dimas.id, conversation_id: conv2.id)}
+      let!(:cu3) { create(:conversation_user, :with_ids, user_id: dimas.id, conversation_id: conv3.id)}
+      let!(:cu4) { create(:conversation_user, :with_ids, user_id: dimas.id, conversation_id: conv4.id)}
+      let!(:cu5) { create(:conversation_user, :with_ids, user_id: dimas.id, conversation_id: conv5.id)}
+      let!(:cu6) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv1.id)}
+      let!(:cu7) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv2.id)}
+      let!(:cu8) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv3.id)}
+      let!(:cu9) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv4.id)}
+      let!(:cu10) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv5.id)}
       before { get '/conversations', params: {}, headers: dimas_headers }
 
       it 'returns list conversations of current user' do
@@ -63,7 +77,10 @@ RSpec.describe 'Conversations API', type: :request do
   describe 'GET /conversations/:id' do
     context 'when the record exists' do
       # TODO: create conversation of dimas
-      before { get "/conversations/#{convo_id}", params: {}, headers: dimas_headers }
+      let!(:conv) { create(:conversation)}
+      let!(:cu1) { create(:conversation_user, :with_ids, user_id: dimas.id, conversation_id: conv.id)}
+      let!(:cu2) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv.id)}
+      before { get "/conversations/#{conv.id}", params: {}, headers: dimas_headers }
 
       it 'returns conversation detail' do
         expect_response(
@@ -81,7 +98,8 @@ RSpec.describe 'Conversations API', type: :request do
     end
 
     context 'when current user access other user conversation' do
-      before { get "/conversations/#{convo_id}", params: {}, headers: samid_headers }
+      let!(:conv) { create(:conversation)}
+      before { get "/conversations/#{conv.id}", params: {}, headers: samid_headers }
 
       it 'returns status code 403' do
         expect(response).to have_http_status(403)

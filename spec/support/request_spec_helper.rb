@@ -18,3 +18,18 @@ module RequestSpecHelper
     expect(response_body).to be_json_type(json) if json
   end
 end
+
+RSpec::Matchers.define :be_json_type do |expected_type|
+  match do |actual|
+    begin
+      actual = JSON.parse(actual) unless actual.is_a?(Hash)
+      actual.is_a?(Hash)
+    rescue JSON::ParserError
+      false
+    end
+  end
+
+  failure_message do |actual|
+    "Expected JSON type to be #{expected_type}, but was #{actual.class}"
+  end
+end

@@ -10,10 +10,10 @@ class Conversation < ApplicationRecord
       with_user: {
         id: with_user.id,
         name: with_user.name,
-        photo_url: with_user.photo_url,
+        photo_url: with_user.photo_url
       },
-      last_message: self.chats.last.new_attribute,
-      unread_count: self.unread_count(user),
+      last_message: self.last_message,
+      unread_count: self.unread_count(user)
     }
   end
 
@@ -23,10 +23,23 @@ class Conversation < ApplicationRecord
     messages.update_all(is_read: true)
   end
 
-  private
+  def last_message
+    last_message = self.chats.last
+    {
+      id: last_message &&last_message.message,
+      sender: {
+        id: last_message && last_message.user.id,
+        name: last_message && last_message.user.name
+      },
+      sent_at: last_message && last_message.created_at
+    }
+  end
+
   def with_user(user)
     self.conversation_users.where.not(user_id: user).first.user
   end
+
+  private
 
   def unread_count(user)
     with_user = self.with_user(user)

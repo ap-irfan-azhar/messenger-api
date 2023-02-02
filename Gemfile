@@ -49,4 +49,6 @@ group :test do
   gem 'factory_bot_rails', '~> 4.0'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'database_cleaner'
+  gem 'rubocop-rspec', require: false
+  gem 'json-schema'
 end
