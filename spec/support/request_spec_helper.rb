@@ -29,8 +29,12 @@ RSpec::Matchers.define :be_json_type do |expected|
       if value.is_a?(Hash)
         return false unless actual.is_a?(Hash) && actual.key?(key)
         return false unless match_json_structure_helper(value, actual[key])
+      elsif value == []
+        return false unless actual[key] == []
+      elsif value.kind_of?(Array)
+        return false unless match_json_structure_helper(value.first, actual[key].first)
       else
-        return false unless actual.is_a?(Hash) && actual.key?(key)
+        return false unless actual.is_a?(Hash) && actual.key?(key) && (actual[key] == value ||actual[key].is_a?(value))
       end
     end
     true

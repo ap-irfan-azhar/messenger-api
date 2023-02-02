@@ -37,6 +37,11 @@ RSpec.describe 'Conversations API', type: :request do
       let!(:cu8) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv3.id)}
       let!(:cu9) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv4.id)}
       let!(:cu10) { create(:conversation_user, :with_ids, user_id: samid.id, conversation_id: conv5.id)}
+      let!(:message1) { create(:chat, :with_attrs, conversation_id: conv1.id, sender_id: dimas.id, message: "Hi" )}
+      let!(:message2) { create(:chat, :with_attrs, conversation_id: conv2.id, sender_id: dimas.id, message: "Hi" )}
+      let!(:message3) { create(:chat, :with_attrs, conversation_id: conv3.id, sender_id: dimas.id, message: "Hi" )}
+      let!(:message4) { create(:chat, :with_attrs, conversation_id: conv4.id, sender_id: dimas.id, message: "Hi" )}
+      let!(:message5) { create(:chat, :with_attrs, conversation_id: conv5.id, sender_id: dimas.id, message: "Hi" )}
       before { get '/conversations', params: {}, headers: dimas_headers }
 
       it 'returns list conversations of current user' do
@@ -64,6 +69,7 @@ RSpec.describe 'Conversations API', type: :request do
                   id: Integer,
                   name: String
                 },
+                message: String,
                 sent_at: String
               },
               unread_count: Integer

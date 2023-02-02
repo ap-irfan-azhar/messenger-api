@@ -12,6 +12,7 @@ RSpec.describe 'Messages API', type: :request do
   let(:convo) { create(:conversation)}
   let!(:conv_user1) { create(:conversation_user, :with_ids, conversation_id: convo.id, user_id: agus.id)}
   let!(:conv_user2) { create(:conversation_user, :with_ids, conversation_id: convo.id, user_id: dimas.id)}
+  let!(:message) { create(:chat, :with_attrs, conversation_id: convo.id, sender_id: dimas.id, message: "Hi" )}
 
   describe 'get list of messages' do
     context 'when user have conversation with other user' do
