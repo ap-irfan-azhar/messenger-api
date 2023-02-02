@@ -8,7 +8,9 @@ class ConversationsController < ApplicationController
   end
 
   def show
-    return render json: @conversation.new_attribute(@user)
+    return render json: {
+      data: @conversation.new_attribute(@user)
+    }, status: :ok
   end
 
   def show_chats

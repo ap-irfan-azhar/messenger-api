@@ -18,7 +18,9 @@ class ChatsController < ApplicationController
     @chat = Chat.new_message(sender, receiver, message)
 
     if @chat.save
-      return render json: @chat.created_attribute(@user), status: :created
+      return render json: {
+        data: @chat.created_attribute(@user)
+      }, status: :created
     else
       return render json: @chat.errors, status: :unprocessable_entity
     end
