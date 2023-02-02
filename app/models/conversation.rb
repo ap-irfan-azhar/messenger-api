@@ -26,11 +26,12 @@ class Conversation < ApplicationRecord
   def last_message
     last_message = self.chats.last
     {
-      id: last_message &&last_message.message,
+      id: last_message && last_message.id,
       sender: {
         id: last_message && last_message.user.id,
         name: last_message && last_message.user.name
       },
+      message: last_message && last_message.message,
       sent_at: last_message && last_message.created_at
     }
   end
