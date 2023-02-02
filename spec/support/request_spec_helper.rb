@@ -1,7 +1,7 @@
 module RequestSpecHelper
   # Parse JSON response to ruby hash
   def response_body
-    JSON.parse(response.body, symbolize_names: true).with_indifferent_access
+    JSON.parse(response.body, symbolize_names: true)
   end
 
   def response_data
@@ -19,17 +19,22 @@ module RequestSpecHelper
   end
 end
 
-RSpec::Matchers.define :be_json_type do |expected_type|
+RSpec::Matchers.define :be_json_type do |expected|
   match do |actual|
-    begin
-      actual = JSON.parse(actual) unless actual.is_a?(Hash)
-      actual.is_a?(Hash)
-    rescue JSON::ParserError
-      false
-    end
+    match_json_structure_helper(expected, actual)
   end
 
-  failure_message do |actual|
-    "Expected JSON type to be #{expected_type}, but was #{actual.class}"
+  def match_json_structure_helper(expected, actual)
+    expected.each do |key, value|
+      if value.is_a?(Hash)
+        return false unless actual.is_a?(Hash) && actual.key?(key)
+        return false unless match_json_structure_helper(value, actual[key])
+      else
+        return false unless actual.is_a?(Hash) && actual.key?(key)
+      end
+    end
+    true
   end
 end
+
+
