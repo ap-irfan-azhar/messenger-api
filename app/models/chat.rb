@@ -2,6 +2,8 @@ class Chat < ApplicationRecord
   belongs_to :user, foreign_key: "sender_id"
   belongs_to :conversation
 
+  validates_presence_of :sender_id, :conversation_id, :message
+
   def created_attribute(user)
     with_user = self.conversation.with_user(user)
     {
