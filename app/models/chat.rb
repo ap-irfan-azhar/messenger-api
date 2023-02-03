@@ -41,7 +41,6 @@ class Chat < ApplicationRecord
     @chat.conversation = @conversation
     @chat.message = message
     @chat.user = sender
-    @chat.is_read = false
     return @chat
   end
 end
