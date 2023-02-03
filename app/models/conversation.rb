@@ -28,8 +28,8 @@ class Conversation < ApplicationRecord
     {
       id: last_message && last_message.id,
       sender: {
-        id: last_message && last_message.user.id,
-        name: last_message && last_message.user.name
+        id: last_message && last_message.sender.id,
+        name: last_message && last_message.sender.name
       },
       message: last_message && last_message.message,
       sent_at: last_message && last_message.created_at

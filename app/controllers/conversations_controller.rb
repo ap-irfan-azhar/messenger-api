@@ -32,7 +32,7 @@ class ConversationsController < ApplicationController
 
     if @conversation.conversation_users.exists?(user_id: @user.id) == false
       return render json: {
-        message: "you can not open other people's conversation"
+        message: "you can not open other user's conversation"
       }, status: :forbidden
     end
   end

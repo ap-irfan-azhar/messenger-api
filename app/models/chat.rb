@@ -1,6 +1,7 @@
 class Chat < ApplicationRecord
-  belongs_to :user, foreign_key: "sender_id"
+  belongs_to :sender, class_name: "User", foreign_key: "sender_id"
   belongs_to :conversation
+  belongs_to :parent, class_name: "Chat", optional: true
 
   validates_presence_of :sender_id, :conversation_id, :message
 
@@ -9,7 +10,8 @@ class Chat < ApplicationRecord
     {
       id: self.id,
       message: self.message,
-      sender: self.user.new_attribute,
+      reply_to: self.reply_to_attribute,
+      sender: self.sender.new_attribute,
       sent_at: self.created_at,
       conversation: {
         id: self.conversation.id,
@@ -26,12 +28,23 @@ class Chat < ApplicationRecord
     {
       id: self.id,
       message: self.message,
-      sender: self.user.new_attribute,
-      sent_at: self.created_at
+      reply_to: self.reply_to_attribute,
+      sender: self.sender.new_attribute,
+      sent_at: self.created_at,
     }
   end
 
-  def self.new_message(sender, receiver, message)
+  def reply_to_attribute
+    parent = self.parent
+    parent && {
+      id: parent.id,
+      sender: parent.sender.new_attribute,
+      message: parent.message,
+      sent_at: parent.created_at
+    }
+  end
+
+  def self.new_message(sender, receiver, message, reply_to)
     @conversation = (sender.conversations & receiver.conversations).first
     if @conversation.nil?
       @conversation = Conversation.new
@@ -42,7 +55,8 @@ class Chat < ApplicationRecord
     @chat = Chat.new
     @chat.conversation = @conversation
     @chat.message = message
-    @chat.user = sender
+    @chat.sender = sender
+    @chat.parent = reply_to unless reply_to.nil? || @conversation != reply_to.conversation
     return @chat
   end
 end

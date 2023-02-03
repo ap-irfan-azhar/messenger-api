@@ -4,6 +4,7 @@ class ChatsController < ApplicationController
     sender = @user
     message = params[:message]
     receiver = User.find_by_id(params[:user_id])
+    reply_to = Chat.find_by_id(params[:reply_to_id])
     if message.blank?
       return render json: {
         message: "can not send empty message"
@@ -15,7 +16,7 @@ class ChatsController < ApplicationController
       }, status: :unprocessable_entity
     end
 
-    @chat = Chat.new_message(sender, receiver, message)
+    @chat = Chat.new_message(sender, receiver, message, reply_to)
 
     if @chat.save
       return render json: {
